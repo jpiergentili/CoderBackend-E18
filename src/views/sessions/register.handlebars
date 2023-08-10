@@ -1,5 +1,6 @@
 <div class="container">
   <h2 class="mt-5">Registrar usuarios</h2>
+
   <form action="/sessions/register" method="post" class="mt-3">
     <div class="mb-3">
       <label for="first_name" class="form-label">Nombre</label>
@@ -24,4 +25,9 @@
     <button type="submit" class="btn btn-primary">Crear</button>
   </form>
 </div>
- 
+
+<hr>
+<div class="mb-3">
+    <label for="login-button" class="form-label">Ya tienes una cuenta?</label>
+    <a id="login-button" class="btn btn-primary" href="http://localhost:8080/sessions/login">Login</a>
+</div>
