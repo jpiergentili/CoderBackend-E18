@@ -17,7 +17,7 @@ import mockingRouter from './routers/mocking.router.js'
 import errorMiddleware from './middlewares/error.middleware.js';
 import CustomError from './services/errors/custom_errors.js';
 import EErrors from './services/errors/enums.js';
-import { generateDatabaseConnectionErrorInfo, generateRoutingErrorInfo } from './services/errors/info.js';
+import { generateRoutingErrorInfo } from './services/errors/info.js';
 
 const app = express();
 const PORT = process.env.PORT || 8080
@@ -58,6 +58,16 @@ app.use('/api/carts', cartsRouter);
 app.use('/products', viewsRouter);
 app.use('/carts', cartRouter);
 app.use('/mockingproducts', mockingRouter);
+app.use('/loggertest', (req, res) => {
+    logger.fatal('Logger test de fatal');
+    logger.error('Logger test de error');
+    logger.warning('Logger test de warning');
+    logger.info('Logger test de info');
+    logger.http('Logger test de http');
+    logger.debug('Logger test de debug');
+    
+    res.send('RUTA DE LOGGER TEST');
+});
 
 // Middleware para manejar rutas no definidas
 app.all('*', (req, res, next) => {
@@ -69,7 +79,6 @@ app.all('*', (req, res, next) => {
     });
     next(customError);
 });
-
 
 // Middleware de manejo de errores después de las rutas y Passport
 app.use(errorMiddleware);

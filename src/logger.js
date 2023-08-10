@@ -2,53 +2,65 @@ import winston from 'winston'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const customWinstonOptions = {
+const myCustomLevels = {
     levels: {
-        debug: 0,
-        http: 1,
-        info: 2,
-        warning: 3,
-        error: 4,
-        fatal: 5
+        fatal: 0,
+        error: 1,
+        warning: 2,
+        info: 3,
+        http: 4,
+        debug: 5
     },
     colors: {
-        debug: 'white',
-        http: 'green',
-        info: 'blue',
-        warning: 'yellow',
+        fatal: 'red',
         error: 'orange',
-        fatal: 'red'
+        warning: 'yellow',
+        info: 'blue',
+        http: 'green',
+        debug: 'white'
     }
 }
 
-winston.addColors(customWinstonOptions.colors)
+winston.addColors(myCustomLevels.colors)
 
 const createLogger = env => {
-    if (env === 'PROD') {
-        return winston.createLogger({
-            levels: customWinstonOptions.levels,
-            level: 'fatal',
-            transports: [
-                new winston.transports.File({
-                    filename: 'errors.log',
-                    format: winston.format.simple()
-                })
-            ]
-        })
-    } else {
-        return winston.createLogger({
-            levels: customWinstonOptions.levels,
-            level: 'fatal',
-            transports: [
-                new winston.transports.Console({
-                    format: winston.format.combine(
-                        winston.format.colorize(),
-                        winston.format.simple()
-                    )
-                })
-            ]
-        })
+    switch(env){
+        case "PROD":
+            return winston.createLogger({
+                levels: myCustomLevels.levels,
+                level: 'info',
+                transports: [
+                    new winston.transports.File({
+                        filename: './src/errors.log',
+                        format: winston.format.simple()
+                    })
+                ]
+            })            
+        case "DEV":
+            return winston.createLogger({
+                levels: myCustomLevels.levels,
+                level: 'debug',
+                transports: [
+                    new winston.transports.Console({
+                        format: winston.format.combine(
+                            winston.format.colorize(),
+                            winston.format.simple()
+                          )
+                    })
+                ]
+            })            
+        default:
+            return winston.createLogger({
+                levels: myCustomLevels.levels,
+                level: 'debug',
+                transports: [
+                    new winston.transports.Console({
+                        format: winston.format.simple()                        
+                    })
+                ]
+            })
     }
+
 }
 
 const logger = createLogger(process.env.ENVIRONMENT)
